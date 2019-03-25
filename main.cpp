@@ -78,17 +78,17 @@ int main() {
             cin >> x;
             cout << "Enter column: ";//Prompt for Column
             cin >> y;
-            if(brd[y - 1][x - 1] != 'x' && brd[y - 1][x - 1] != 'o'){ //Checking to see if the Cell is Empty or not
-                if((y > 3 || x > 3) || (y < 1 || x < 1))
-                {
-                    cout << "Enter a number between 1 and 3" << endl;
+            if((y <= 3 || x <= 3) && (y >= 1 || x >= 1)){ //Checking to see if the Cell is Empty or not
+                if(brd[y - 1][x - 1] == ' '){
+                brd[y - 1][x - 1] = 'o';//Putting O in board
+                break;//Exit from prompt loop
+                } else{
+                    cout << "The Cell is full";
                     continue;
                 }
-                else brd[y - 1][x - 1] = 'o';//Putting O in board
-                break;//Exit from prompt loop
             }
             else{
-                cout << "Cell is full" << endl;
+                cout << "you entered a number greaterthan 3 or less than 1" << endl;
                 continue;
             }
         }
