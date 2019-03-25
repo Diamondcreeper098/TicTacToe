@@ -3,12 +3,9 @@
 #include <vector>
 #include <ctime>
 #include <random>
-#ifdef _WIN32
+#ifdef _WIN32 || _WIN64
 #define clear() system("cls")
-//define clear function for windows 32 bit
-#elif _WIN64
-#define clear() system("cls")
-//define clear function for windows 64 bit
+//define clear function for windows
 #elif __unix || __unix__
 #define clear() system("clear")
 //define clear function for UNIX
@@ -22,45 +19,41 @@
 #define clear() system("clear")
 //define clear function for FreeBSD
 #else
-//other operating systems sre not supported
+define clear()
+// Other oprating systems are not supported
 #endif
 
 using namespace std;
+enum Win_state{CPU,Player,Draw,None};
 
-char * is_winning(char board[3][3]){ // checking to see who is winner
+Win_state is_winning(char board[3][3]){ // checking to see who is winner
     //CPU
-        //Horizontal Checking for X
-        if(board[0][0] == 'x' && board[0][1] == 'x' && board[0][2] == 'x') return "cpu";
-        else if(board[1][0] == 'x' && board[1][1] == 'x' && board[1][2] == 'x') return "cpu";
-        else if(board[2][0] == 'x' && board[2][1] == 'x' && board[2][2] == 'x') return "cpu";
-        //Cross Checking for X
-        else if(board[0][0] == 'x' && board[1][1] == 'x' && board[2][2] == 'x') return "cpu";
-        else if(board[2][0] == 'x' && board[1][1] == 'x' && board[0][2] == 'x') return "cpu";
-        //Vertical Checking for X
-        else if(board[0][0] == 'x' && board[1][0] == 'x' && board[2][0] == 'x') return "cpu";
-        else if(board[0][1] == 'x' && board[1][1] == 'x' && board[2][1] == 'x') return "cpu";
-        else if(board[0][2] == 'x' && board[1][2] == 'x' && board[2][2] == 'x') return "cpu";
+        if((board[0][0] == 'x' && board[0][1] == 'x' && board[0][2] == 'x') ||
+           (board[1][0] == 'x' && board[1][1] == 'x' && board[1][2] == 'x') ||
+           (board[2][0] == 'x' && board[2][1] == 'x' && board[2][2] == 'x') ||
+           (board[0][0] == 'x' && board[1][1] == 'x' && board[2][2] == 'x') ||
+           (board[2][0] == 'x' && board[1][1] == 'x' && board[0][2] == 'x') ||
+           (board[0][0] == 'x' && board[1][0] == 'x' && board[2][0] == 'x') ||
+           (board[0][1] == 'x' && board[1][1] == 'x' && board[2][1] == 'x') ||
+           (board[0][2] == 'x' && board[1][2] == 'x' && board[2][2] == 'x')) return CPU;
     //Player
-        //Horizontal Checking for O
-        else if(board[0][0] == 'o' && board[0][1] == 'o' && board[0][2] == 'o') return "ply";
-        else if(board[1][0] == 'o' && board[1][1] == 'o' && board[1][2] == 'o') return "ply";
-        else if(board[2][0] == 'o' && board[2][1] == 'o' && board[2][2] == 'o') return "ply";
-        //Cross Checking for O
-        else if(board[0][0] == 'o' && board[1][1] == 'o' && board[2][2] == 'o') return "ply";
-        else if(board[2][0] == 'o' && board[1][1] == 'o' && board[0][2] == 'o') return "ply";
-        //Vertical Checking for O
-        else if(board[0][0] == 'o' && board[1][0] == 'o' && board[2][0] == 'o') return "ply";
-        else if(board[0][1] == 'o' && board[1][1] == 'o' && board[2][1] == 'o') return "ply";
-    else if(board[0][2] == 'o' && board[1][2] == 'o' && board[2][2] == 'o') return "ply";
+        else if((board[0][0] == 'o' && board[0][1] == 'o' && board[0][2] == 'o') ||
+                (board[1][0] == 'o' && board[1][1] == 'o' && board[1][2] == 'o') ||
+                (board[2][0] == 'o' && board[2][1] == 'o' && board[2][2] == 'o') ||
+                (board[0][0] == 'o' && board[1][1] == 'o' && board[2][2] == 'o') ||
+                (board[2][0] == 'o' && board[1][1] == 'o' && board[0][2] == 'o') ||
+                (board[0][0] == 'o' && board[1][0] == 'o' && board[2][0] == 'o') ||
+                (board[0][1] == 'o' && board[1][1] == 'o' && board[2][1] == 'o') ||
+                (board[0][2] == 'o' && board[1][2] == 'o' && board[2][2] == 'o')) return Player;
     else { // game is still not completed
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
                 if (board[i][j] == ' '){
-                    return "None";
+                    return None;
                 }
             }
         }
-        return "Draw";//no one is winner
+        return Draw;//no one is winner
     }
 }
 
@@ -79,16 +72,17 @@ int main() {
             }
             cout << endl << "-----------" << endl;
         }
+
         while(true){
             cout << "Enter row: "; //Prompt for Row
             cin >> x;
             cout << "Enter column: ";//Prompt for Column
             cin >> y;
             if(brd[y - 1][x - 1] != 'x' && brd[y - 1][x - 1] != 'o'){ //Checking to see if the Cell is Empty or not
-                if(y > 3 || x > 3)
+                if((y > 3 || x > 3) || (y < 1 || x < 1))
                 {
                     cout << "Enter a number between 1 and 3" << endl;
-                    continue; // Continue to getting prompt if user entered number more than 3
+                    continue;
                 }
                 else brd[y - 1][x - 1] = 'o';//Putting O in board
                 break;//Exit from prompt loop
@@ -98,32 +92,11 @@ int main() {
                 continue;
             }
         }
-        while(true){
-            x = (rand() % 3) + 1;//getting random number between 1 and 3
-            y = (rand() % 3) + 1;//getting random number between 1 and 3
-            if(brd[y - 1][x - 1] != 'o' && brd[y - 1][x - 1] != 'x'){
-                brd[y - 1][x - 1] = 'x';
-                break; //Back to game itself
-            }
-            else{
-                continue; //Continue to getting random number if Cell is full
-            }
-        }
-        char* win = is_winning(brd);//Who is won
-        if (win == "cpu")
-        {
-            cout << "Computer won!";
-        }
-        else if (win == "ply"){
-            cout << "You won!";
-        }
-        else if (win == "Draw"){
-            cout << "Draw!";
-        }
-        else{
-            continue;
-        }
-        if(win != "None"){
+        Win_state win = is_winning(brd);//Who is won
+        if (win == CPU) cout << "Computer won!";
+        else if (win == Player) cout << "You won!";
+        else if (win == Draw) cout << "Draw!";
+        if(win != None){
             cout << "Do You want to play again? (Y/N) ";
             cin >> prompt;
             if(tolower(prompt) == 'y'){
@@ -139,6 +112,18 @@ int main() {
                 break;//Break the game loop
             }
         }
+        while(true){
+            x = (rand() % 3) + 1;//getting random number between 1 and 3
+            y = (rand() % 3) + 1;//getting random number between 1 and 3
+            if(brd[y - 1][x - 1] != 'o' && brd[y - 1][x - 1] != 'x'){
+                brd[y - 1][x - 1] = 'x';
+                break; //Back to game itself
+            }
+            else{
+                continue; //Continue to getting random number if Cell is full
+            }
+        }
+
     }
     return 0;
 }
